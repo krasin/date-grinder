@@ -45,16 +45,30 @@
     }</style>
   <script>
     $(document).ready(function() {
+      questions = [
+        {"title": "Начало второй мировой войны", "ans": 1939},
+        {"title": "Бородинское сражение", "ans": 1812},
+    	{"title": "Куликовская битва", "ans": 1380},
+	{"title": "Начало первой мировой войны", "ans": 1914},
+        {"title": "Изобретение транзистора", "ans": 1947},
+	{"title": "Октябрьская революция", "ans": 1917},
+	{"title": "Окончание смуты", "ans": 1613}, 
+      ];
       var history = new Josh.History({ key: 'josh.helloworld'});
       shell = Josh.Shell({history: history});
       var promptCounter = 0;
       shell.onNewPrompt(function(callback) {
         promptCounter++;
-        callback("[" + promptCounter + "] $");
+        currentQuestion = questions[promptCounter % questions.length]; 
+        callback(currentQuestion.title + ":");
       });
       shell.cmdHandlers._default = {
         exec: function(cmd, args, callback) {
-          callback(_.template("zzz: " + cmd));
+	  if (currentQuestion.ans == cmd) {
+            callback("Верно, " + currentQuestion.ans + ".");
+          } else {
+            callback(_.template("Ошибка. Правильный ответ: " + currentQuestion.ans));
+          }
         },
         completion: function(cmd, arg, line, callback) {
           return callback("");
@@ -83,6 +97,7 @@
 <body>
     <div id="shell-panel">
       <div>Простая система запоминания дат.</div>
+      <div>===============================</div>
       <div id="shell-view"></div>
     </div>
 </body>
