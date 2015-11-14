@@ -73,7 +73,8 @@
         shell = Josh.Shell({history: history});
         shell.onNewPrompt(function(callback) {
           questionCounter++;
-          currentQuestion = questions[questionCounter % questions.length]; 
+          var idx = Math.floor(Math.random() * questions.length) % questions.length;
+          currentQuestion = questions[idx];
           callback(currentQuestion.title + ":");
         });
         shell.cmdHandlers._default = {
