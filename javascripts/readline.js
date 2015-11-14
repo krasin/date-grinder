@@ -1,5 +1,5 @@
 /* ------------------------------------------------------------------------*
- * Copyright 2013-2014 Arne F. Claassen
+ * Copyright 2013 Arne F. Claassen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  *-------------------------------------------------------------------------*/
 
 var Josh = Josh || {};
-Josh.Version = "0.2.10";
+Josh.Version = "0.2.9";
 (function(root) {
   Josh.Keys = {
     Special: {
@@ -85,7 +85,7 @@ Josh.Version = "0.2.10";
       left: cmdLeft,
       right: cmdRight,
       cancel: cmdCancel,
-      'delete': cmdDeleteChar,
+      delete: cmdDeleteChar,
       backspace: cmdBackspace,
       kill_eof: cmdKillToEOF,
       kill_wordback: cmdKillWordBackward,
@@ -96,9 +96,9 @@ Josh.Version = "0.2.10";
       wordback: cmdBackwardWord,
       wordforward: cmdForwardWord,
       yank_rotate: cmdRotate
-  };
+    }
     var _keyMap = {
-      'default': {
+      default: {
         8: cmdBackspace,    // Backspace
         9: cmdComplete,     // Tab
         13: cmdDone,        // Enter
@@ -272,8 +272,8 @@ Josh.Version = "0.2.10";
       } else if(key.ctrlKey) {
         k.modifier = 'control';
       }
-      if(key['char']) {
-        k.code = key['char'].charCodeAt(0);
+      if(key.char) {
+        k.code = key.char.charCodeAt(0);
       }
       return k;
     }
@@ -674,7 +674,7 @@ Josh.Version = "0.2.10";
 
         // check for some special first keys, regardless of modifiers
         _console.log("key: " + e.keyCode);
-        var cmd = _keyMap['default'][e.keyCode];
+        var cmd = _keyMap.default[e.keyCode];
         // intercept ctrl- and meta- sequences (may override the non-modifier cmd captured above
         var mod;
         if(e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey) {
@@ -727,3 +727,5 @@ Josh.Version = "0.2.10";
     return self;
   };
 })(this);
+
+

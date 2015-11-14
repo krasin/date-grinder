@@ -1,5 +1,5 @@
 /* ------------------------------------------------------------------------*
- * Copyright 2013-2014 Arne F. Claassen
+ * Copyright 2013 Arne F. Claassen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,11 +28,7 @@ var Josh = Josh || {};
     var _key = config.key || 'josh.history';
 
     if (_storage) {
-      try {
-        var data = _storage.getItem(_key);
-      } catch(e) {
-        _console.log("Error accessing storage");
-      }
+      var data = _storage.getItem(_key);
       if (data) {
         _history = JSON.parse(data);
         _searchCursor = _cursor = _history.length - 1;
@@ -42,11 +38,7 @@ var Josh = Josh || {};
     }
     function save() {
       if (_storage) {
-        try {
-          _storage.setItem(_key, JSON.stringify(_history));
-        } catch(e) {
-          _console.log("Error accessing storage");
-        }
+        _storage.setItem(_key, JSON.stringify(_history));
       }
     }
 
