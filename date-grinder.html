@@ -54,19 +54,23 @@
 	{"title": "Октябрьская революция", "ans": 1917},
 	{"title": "Окончание смуты", "ans": 1613}, 
       ];
+      goodCnt = 0;
+      badCnt = 0;
+      questionCounter = 0;
       var history = new Josh.History({ key: 'josh.helloworld'});
       shell = Josh.Shell({history: history});
-      var promptCounter = 0;
       shell.onNewPrompt(function(callback) {
-        promptCounter++;
-        currentQuestion = questions[promptCounter % questions.length]; 
+        questionCounter++;
+        currentQuestion = questions[questionCounter % questions.length]; 
         callback(currentQuestion.title + ":");
       });
       shell.cmdHandlers._default = {
         exec: function(cmd, args, callback) {
 	  if (currentQuestion.ans == cmd) {
+            goodCnt++;
             callback("Верно, " + currentQuestion.ans + ".");
           } else {
+            badCnt++;
             callback(_.template("Ошибка. Правильный ответ: " + currentQuestion.ans));
           }
         },
