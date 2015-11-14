@@ -33,6 +33,7 @@
       color: #00fe00;
       padding: 0px 0px 0px 0px;
       font-family: 'Source Code Pro';
+      font-size: 150%;
       overflow: scroll;
       overflow-x: hidden;
       overflow-y: scroll;
@@ -45,12 +46,20 @@
   <script>
     $(document).ready(function() {
       var history = new Josh.History({ key: 'josh.helloworld'});
-      var shell = Josh.Shell({history: history});
+      shell = Josh.Shell({history: history});
       var promptCounter = 0;
       shell.onNewPrompt(function(callback) {
         promptCounter++;
         callback("[" + promptCounter + "] $");
       });
+      shell.cmdHandlers._default = {
+        exec: function(cmd, args, callback) {
+          callback(_.template("zzz: " + cmd));
+        },
+        completion: function(cmd, arg, line, callback) {
+          return callback("");
+        }
+      };      
       shell.setCommandHandler("hello", {
         exec: function(cmd, args, callback) {
           var arg = args[0] || '';
@@ -73,7 +82,7 @@
 </head>
 <body>
     <div id="shell-panel">
-      <div>Type <code>help</code> or hit <code>TAB</code> for a list of commands.</div>
+      <div>Простая система запоминания дат.</div>
       <div id="shell-view"></div>
     </div>
 </body>

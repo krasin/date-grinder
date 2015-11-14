@@ -35,7 +35,7 @@ var Josh = Josh || {};
     var _cursor_visible = false;
     var _activationHandler;
     var _deactivationHandler;
-    var _cmdHandlers = {
+    var cmdHandlers = {
       clear: {
         exec: function(cmd, args, callback) {
           $(id(_input_id)).parent().empty();
@@ -81,6 +81,7 @@ var Josh = Josh || {};
 
     // public methods
     var self = {
+      cmdHandlers: cmdHandlers,
       commands: commands,
       templates: {
         history: _.template("<div><% _.each(items, function(cmd, i) { %><div><%- i %>&nbsp;<%- cmd %></div><% }); %></div>"),
@@ -106,10 +107,10 @@ var Josh = Josh || {};
         _readline.deactivate();
       },
       setCommandHandler: function(cmd, cmdHandler) {
-        _cmdHandlers[cmd] = cmdHandler;
+        cmdHandlers[cmd] = cmdHandler;
       },
       getCommandHandler: function(cmd) {
-        return _cmdHandlers[cmd];
+        return cmdHandlers[cmd];
       },
       setPrompt: function(prompt) {
         _prompt = prompt;
@@ -221,7 +222,7 @@ var Josh = Josh || {};
     }
 
     function commands() {
-      return _.chain(_cmdHandlers).keys().filter(function(x) {
+      return _.chain(cmdHandlers).keys().filter(function(x) {
         return x[0] != "_"
       }).value();
     }
@@ -251,7 +252,7 @@ var Josh = Josh || {};
     }
 
     function getHandler(cmd) {
-      return _cmdHandlers[cmd] || _cmdHandlers._default;
+      return cmdHandlers[cmd] || cmdHandlers._default;
     }
 
     function renderOutput(output, callback) {
@@ -314,7 +315,7 @@ var Josh = Josh || {};
       self.render();
     });
     _readline.onClear(function() {
-      _cmdHandlers.clear.exec(null, null, function() {
+      cmdHandlers.clear.exec(null, null, function() {
         renderOutput(null, function() {
         });
       });
@@ -356,7 +357,7 @@ var Josh = Josh || {};
       var arg = parts.pop() || '';
       _console.log("getting completion handler for " + cmd);
       var handler = getHandler(cmd);
-      if(handler != _cmdHandlers._default && cmd && cmd == text) {
+      if(handler != cmdHandlers._default && cmd && cmd == text) {
 
         _console.log("valid cmd, no args: append space");
         // the text to complete is just a valid command, append a space
