@@ -78,13 +78,23 @@
         });
         shell.cmdHandlers._default = {
           exec: function(cmd, args, callback) {
+            var reply = "";
 	    if (currentQuestion.ans == cmd) {
               goodCnt++;
-              callback("Верно, " + currentQuestion.ans + ".");
+              reply = "Верно, " + currentQuestion.ans + ".";
             } else {
               badCnt++;
-              callback(_.template("Ошибка. Правильный ответ: " + currentQuestion.ans));
+              reply = "Ошибка. Правильный ответ: " + currentQuestion.ans;
             }
+            if (questionCounter >= 20) {
+              var percent = Math.round(goodCnt * 100 / questionCounter);
+              reply += "<br><br>Результаты: " + percent + "%<br>=============<br>Верных ответов: " + goodCnt + "<br>Ошибок: " + badCnt +
+                  "<br><br>";
+              goodCnt = 0;
+              badCnt = 0;
+              questionCounter = 0;
+            }
+            callback(reply);
           },
           completion: function(cmd, arg, line, callback) {
             return callback("");
