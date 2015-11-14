@@ -48,22 +48,17 @@
       questions = [];
       $.get("dates.txt", function (data) {
         var lines = data.split("\n");
-        var goodLines = [];
         for (var i = 0; i < lines.length; i++) {
           var line = $.trim(lines[i]);
 	  if (line == "" || line[0] == ';' || line[0] == '#') {
             continue;
           }
-          goodLines.push(line);
-        }
-        for (var i = 0; i < goodLines.length; i+= 2) {
-          var question = goodLines[i];
-          var ans = goodLines[i+1];
-          if (isNaN(ans)) {
-            alert(ans + ' is not a number');
-            // Invalid date
+          var spaceIdx = line.indexOf(" ");
+          if (spaceIdx < 0) {
             continue;
           }
+          var ans = $.trim(line.substring(0, spaceIdx));
+          var question = $.trim(line.substring(spaceIdx+1));
           questions.push({"title": question, "ans": ans});
         }
         goodCnt = 0;
