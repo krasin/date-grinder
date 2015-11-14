@@ -45,40 +45,53 @@
     }</style>
   <script>
     $(document).ready(function() {
-      questions = [
-        {"title": "Начало второй мировой войны", "ans": 1939},
-        {"title": "Бородинское сражение", "ans": 1812},
-    	{"title": "Куликовская битва", "ans": 1380},
-	{"title": "Начало первой мировой войны", "ans": 1914},
-        {"title": "Изобретение транзистора", "ans": 1947},
-	{"title": "Октябрьская революция", "ans": 1917},
-	{"title": "Окончание смуты", "ans": 1613}, 
-      ];
-      goodCnt = 0;
-      badCnt = 0;
-      questionCounter = 0;
-      var history = new Josh.History({ key: 'josh.helloworld'});
-      shell = Josh.Shell({history: history});
-      shell.onNewPrompt(function(callback) {
-        questionCounter++;
-        currentQuestion = questions[questionCounter % questions.length]; 
-        callback(currentQuestion.title + ":");
-      });
-      shell.cmdHandlers._default = {
-        exec: function(cmd, args, callback) {
-	  if (currentQuestion.ans == cmd) {
-            goodCnt++;
-            callback("Верно, " + currentQuestion.ans + ".");
-          } else {
-            badCnt++;
-            callback(_.template("Ошибка. Правильный ответ: " + currentQuestion.ans));
+      questions = [];
+      $.get("dates.txt", function (data) {
+        var lines = data.split("\n");
+        var goodLines = [];
+        for (var i = 0; i < lines.length; i++) {
+          var line = $.trim(lines[i]);
+	  if (line == "" || line[0] == ';' || line[0] == '#') {
+            continue;
           }
-        },
-        completion: function(cmd, arg, line, callback) {
-          return callback("");
+          goodLines.push(line);
         }
-      };      
-      shell.activate();
+        for (var i = 0; i < goodLines.length; i+= 2) {
+          var question = goodLines[i];
+          var ans = goodLines[i+1];
+          if (isNaN(ans)) {
+            alert(ans + ' is not a number');
+            // Invalid date
+            continue;
+          }
+          questions.push({"title": question, "ans": ans});
+        }
+        goodCnt = 0;
+        badCnt = 0;
+        questionCounter = 0;
+        var history = new Josh.History({ key: 'josh.helloworld'});
+        shell = Josh.Shell({history: history});
+        shell.onNewPrompt(function(callback) {
+          questionCounter++;
+          currentQuestion = questions[questionCounter % questions.length]; 
+          callback(currentQuestion.title + ":");
+        });
+        shell.cmdHandlers._default = {
+          exec: function(cmd, args, callback) {
+	    if (currentQuestion.ans == cmd) {
+              goodCnt++;
+              callback("Верно, " + currentQuestion.ans + ".");
+            } else {
+              badCnt++;
+              callback(_.template("Ошибка. Правильный ответ: " + currentQuestion.ans));
+            }
+          },
+          completion: function(cmd, arg, line, callback) {
+            return callback("");
+          }
+        };      
+        shell.activate();
+      }); // on dates.txt load
     });</script>
 </head>
 <body>
