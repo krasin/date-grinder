@@ -30,7 +30,7 @@
       width: 100%;
       margin: 0px auto;
       background-color: #001f05;
-      color: #00fe00;
+      color: #ffffff;
       padding: 0px 0px 0px 0px;
       font-family: 'Source Code Pro';
       font-size: 150%;
@@ -77,14 +77,14 @@
             var reply = "";
 	    if (currentQuestion.ans == cmd) {
               goodCnt++;
-              reply = "Верно, " + currentQuestion.ans + ".";
+              reply = "Верно, " + currentQuestion.ans + ".<br><br>";
             } else {
               badCnt++;
-              reply = "Ошибка. Правильный ответ: " + currentQuestion.ans;
+              reply = "Ошибка. Правильный ответ: " + currentQuestion.ans + "<br><br>";
             }
             if (questionCounter >= 20) {
               var percent = Math.round(goodCnt * 100 / questionCounter);
-              reply += "<br><br>Результаты: " + percent + "%<br>=============<br>Верных ответов: " + goodCnt + "<br>Ошибок: " + badCnt +
+              reply += "<br>Результаты: " + percent + "%<br>=============<br>Верных ответов: " + goodCnt + "<br>Ошибок: " + badCnt +
                   "<br><br>";
               goodCnt = 0;
               badCnt = 0;
