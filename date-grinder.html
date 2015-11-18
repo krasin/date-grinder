@@ -24,6 +24,7 @@
   <script src="javascripts/readline.js"></script>
   <script src="javascripts/shell.js"></script>
   <script src="javascripts/pathhandler.js"></script>
+  <script src="dates.min.txt"></script>
   <style type="text/css">
     #shell-panel {
       height: 100%;
@@ -46,58 +47,56 @@
   <script>
     $(document).ready(function() {
       questions = [];
-      $.get("dates.txt", function (data) {
-        var lines = data.split("\n");
-        for (var i = 0; i < lines.length; i++) {
-          var line = $.trim(lines[i]);
-	  if (line == "" || line[0] == ';' || line[0] == '#') {
-            continue;
-          }
-          var spaceIdx = line.indexOf(" ");
-          if (spaceIdx < 0) {
-            continue;
-          }
-          var ans = $.trim(line.substring(0, spaceIdx));
-          var question = $.trim(line.substring(spaceIdx+1));
-          questions.push({"title": question, "ans": ans});
+      var lines = dates_str.split("\n");
+      for (var i = 0; i < lines.length; i++) {
+        var line = $.trim(lines[i]);
+        if (line == "" || line[0] == ';' || line[0] == '#') {
+          continue;
         }
-        goodCnt = 0;
-        badCnt = 0;
-        questionCounter = 0;
-        var history = new Josh.History({ key: 'josh.helloworld'});
-        shell = Josh.Shell({history: history});
-        shell.onNewPrompt(function(callback) {
-          questionCounter++;
-          var idx = Math.floor(Math.random() * questions.length) % questions.length;
-          currentQuestion = questions[idx];
-          callback(currentQuestion.title + ":");
-        });
-        shell.cmdHandlers._default = {
-          exec: function(cmd, args, callback) {
-            var reply = "";
-	    if (currentQuestion.ans == cmd) {
-              goodCnt++;
-              reply = "Верно, " + currentQuestion.ans + ".<br><br>";
-            } else {
-              badCnt++;
-              reply = "Ошибка. Правильный ответ: " + currentQuestion.ans + "<br><br>";
-            }
-            if (questionCounter >= 20) {
-              var percent = Math.round(goodCnt * 100 / questionCounter);
-              reply += "<br>Результаты: " + percent + "%<br>=============<br>Верных ответов: " + goodCnt + "<br>Ошибок: " + badCnt +
-                  "<br><br>";
-              goodCnt = 0;
-              badCnt = 0;
-              questionCounter = 0;
-            }
-            callback(reply);
-          },
-          completion: function(cmd, arg, line, callback) {
-            return callback("");
+        var spaceIdx = line.indexOf(" ");
+        if (spaceIdx < 0) {
+          continue;
+        }
+        var ans = $.trim(line.substring(0, spaceIdx));
+        var question = $.trim(line.substring(spaceIdx+1));
+        questions.push({"title": question, "ans": ans});
+      }
+      goodCnt = 0;
+      badCnt = 0;
+      questionCounter = 0;
+      var history = new Josh.History({ key: 'josh.helloworld'});
+      shell = Josh.Shell({history: history});
+      shell.onNewPrompt(function(callback) {
+        questionCounter++;
+        var idx = Math.floor(Math.random() * questions.length) % questions.length;
+        currentQuestion = questions[idx];
+        callback(currentQuestion.title + ":");
+      });
+      shell.cmdHandlers._default = {
+        exec: function(cmd, args, callback) {
+          var reply = "";
+          if (currentQuestion.ans == cmd) {
+            goodCnt++;
+            reply = "Верно, " + currentQuestion.ans + ".<br><br>";
+          } else {
+            badCnt++;
+            reply = "Ошибка. Правильный ответ: " + currentQuestion.ans + "<br><br>";
           }
-        };      
-        shell.activate();
-      }); // on dates.txt load
+          if (questionCounter >= 20) {
+            var percent = Math.round(goodCnt * 100 / questionCounter);
+            reply += "<br>Результаты: " + percent + "%<br>=============<br>Верных ответов: " + goodCnt + "<br>Ошибок: " + badCnt +
+                "<br><br>";
+            goodCnt = 0;
+            badCnt = 0;
+            questionCounter = 0;
+          }
+          callback(reply);
+        },
+        completion: function(cmd, arg, line, callback) {
+          return callback("");
+        }
+      };      
+      shell.activate();
     });</script>
 </head>
 <body>
